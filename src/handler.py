@@ -15,6 +15,7 @@ def handler(args):
     skipped_files = []
 
     for url in args.urls:
+        logger.info(f"Processing URL: {url}")
         apple_music = AppleMusic(
             cache=os.path.join(__get_path(), "cache"),
             config=os.path.join(__get_path(), "config"),
@@ -22,7 +23,7 @@ def handler(args):
         )
         data_from_api = apple_music.getInfo(url)
 
-        lyrics_folder = os.path.join(__get_path(), "lyrics-downloaded")
+        lyrics_folder = os.path.join(__get_path(), "downloads")
         os.makedirs(lyrics_folder, exist_ok=True)
 
         track_list = (

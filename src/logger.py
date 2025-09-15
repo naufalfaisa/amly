@@ -10,17 +10,17 @@ class Logger:
             sys.exit()
 
     def warning(self, log, exit=0):
-        print(f"{Style.BRIGHT}{Fore.YELLOW}[WARNING]{Style.RESET_ALL} {log}")
+        print(f"{Fore.YELLOW + Style.BRIGHT}[WARNING]{Style.RESET_ALL} {log}")
         if exit == 1:
             sys.exit()
 
     def error(self, log, exit=0):
-        print(f"{Style.BRIGHT}{Fore.RED}[ERROR]{Style.RESET_ALL} {log}")
+        print(f"{Fore.RED + Style.BRIGHT}[ERROR]{Style.RESET_ALL} {log}")
         if exit == 1:
             sys.exit()
 
     def done(self, log, exit=0):
-        print(f"{Style.BRIGHT}{Fore.GREEN}[DONE]{Style.RESET_ALL} {log}")
+        print(f"{Fore.GREEN + Style.BRIGHT}[DONE]{Style.RESET_ALL} {log}")
         if exit == 1:
             sys.exit()
 

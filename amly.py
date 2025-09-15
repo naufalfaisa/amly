@@ -6,12 +6,10 @@ from src.handler import handler
 
 init(autoreset=True)
 
-LOGO = f"""
- {Fore.RED + Style.BRIGHT}──── Apple Music Lyrics ────{Style.RESET_ALL}
-"""
+LOGO = f"\n{Fore.RED + Style.BRIGHT}────── AMLY Downloader ──────{Style.RESET_ALL}"
 
-ASCII_ART = r"""
-⣿⣿⣿⡷⠊⡢⡹⣦⡑⢂⢕⢂⢕⢂⢕⢂⠕⠔⠌⠝⠛⠶⠶⢶⣦⣄⢂⢕⢂⢕
+ASCII_ART = f"""
+{Style.BRIGHT}⣿⣿⣿⡷⠊⡢⡹⣦⡑⢂⢕⢂⢕⢂⢕⢂⠕⠔⠌⠝⠛⠶⠶⢶⣦⣄⢂⢕⢂⢕
 ⣿⣿⠏⣠⣾⣦⡐⢌⢿⣷⣦⣅⡑⠕⠡⠐⢿⠿⣛⠟⠛⠛⠛⠛⠡⢷⡈⢂⢕⢂
 ⠟⣡⣾⣿⣿⣿⣿⣦⣑⠝⢿⣿⣿⣿⣿⣿⡵⢁⣤⣶⣶⣿⢿⢿⢿⡟⢻⣤⢑⢂
 ⣾⣿⣿⡿⢟⣛⣻⣿⣿⣿⣦⣬⣙⣻⣿⣿⣷⣿⣿⢟⢝⢕⢕⢕⢕⢽⣿⣿⣷⣔
@@ -25,8 +23,7 @@ ASCII_ART = r"""
 
 def main():
     parser = argparse.ArgumentParser(
-        description=ASCII_ART,
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        description=print(ASCII_ART)
     )
     parser.add_argument(
         '-v',
@@ -48,9 +45,10 @@ def main():
     )
     args = parser.parse_args()
 
-    if not args.urls and not args.sync:
+    if not any([args.urls, args.sync]):
         logger.warning("Don't run this by double-clicking the exe. Use command line arguments instead!")
         parser.print_usage()
+        input("Enter to exit...")
         return
     
     handler(args)
