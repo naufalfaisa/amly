@@ -67,44 +67,51 @@ class AppleMusic(object):
         else: logger.error("URL is invalid!", 1)
 
     def __accessToken(self):
-        accessToken = self.__cache.get("accessToken")
+        while True:
+            accessToken = self.__cache.get("accessToken")
 
-        if not accessToken:
-            logger.info("Fetching access token from web...")
+            if not accessToken:
+                logger.info("Access token not found in cache. Fetching from web...")
+                try:
+                    response = requests.get('https://music.apple.com/us/browse', timeout=10)
+                    response.raise_for_status()
+                    indexJs = re.search(r'(?<=index)(.*?)(?=\.js")', response.text).group(1)
 
-            response = requests.get('https://music.apple.com/us/browse')
-            if response.status_code != 200:
-                logger.error("Failed to get music.apple.com! Please re-try...", 1)
+                    response_js = requests.get(f'https://music.apple.com/assets/index{indexJs}.js', timeout=10)
+                    response_js.raise_for_status()
 
-            indexJs = re.search(r'(?<=index)(.*?)(?=\.js")', response.text).group(1)
-            response = requests.get(f'https://music.apple.com/assets/index{indexJs}.js')
-            if response.status_code != 200:
-                logger.error("Failed to get js library! Please re-try...", 1)
+                    accessToken = re.search(r'(?=eyJh)(.*?)(?=")', response_js.text).group(1)
+                    if not accessToken:
+                        raise ValueError("Access token not found in JS file.")
 
-            accessToken = re.search('(?=eyJh)(.*?)(?=")', response.text).group(1)
-            self.__cache.set("accessToken", accessToken)
-        else:
-            logger.info("Checking access token found in cache...")
+                    self.__cache.set("accessToken", accessToken)
+                    logger.info("Access token fetched successfully.")
+                    
+                except Exception as e:
+                    logger.warning(f"Failed to fetch token automatically: {e}")
+                    accessToken = input("Enter your media-user-token manually: ").strip()
+                    if not accessToken:
+                        logger.error("No token entered. Cannot continue.", 1)
+                        return
+                    self.__cache.set("accessToken", accessToken)
 
-            self.__session.headers.update(
-                {
-                    'authorization': f'Bearer {accessToken}'
-                }
-            )
+            self.__session.headers.update({'authorization': f'Bearer {accessToken}'})
 
-            response = self.__session.get("https://amp-api.music.apple.com/v1/catalog/us/songs/1450330685")
-
-            if response.text == "":
-                logger.info("Access token found in cache is expired!")
-
-                self.__cache.delete("access_token")
-                self.__accessToken()
-        
-        self.__session.headers.update(
-            {
-                'authorization': f'Bearer {accessToken}'
-            }
-        )
+            try:
+                test_response = self.__session.get(
+                    "https://amp-api.music.apple.com/v1/catalog/us/songs/1450330685",
+                    timeout=10
+                )
+                if test_response.status_code == 200 and test_response.text:
+                    logger.info("Access token is valid.")
+                    break
+                else:
+                    logger.info("Access token expired or invalid. Removing from cache...")
+                    self.__cache.delete("accessToken")
+                    
+            except requests.RequestException as e:
+                logger.warning(f"Failed to validate token: {e}")
+                self.__cache.delete("accessToken")
 
     def __mediaUserToken(self, fromLoop=False):
         if self.__config.get():
