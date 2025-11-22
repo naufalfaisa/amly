@@ -1,5 +1,8 @@
 lxml
-colorama
-requests
 beautifulsoup4
+requests
+colorama
 sanitize-filename
+mecab-python3
+unidic-lite
+cutlet

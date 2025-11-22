@@ -1,7 +1,6 @@
 import argparse
 from src.logger import logger
 from colorama import init, Fore, Style
-
 from src.handler import handler
 
 init(autoreset=True)
@@ -35,6 +34,12 @@ def main():
         '-s',
         '--sync',
         help="Save timecode's in 00:00.000 format (three ms points)",
+        action="store_true"
+    )
+    parser.add_argument(
+        '-r',
+        '--romaji',
+        help="Convert Japanese lyrics to Romaji (requires MeCab/Cutlet)",
         action="store_true"
     )
     parser.add_argument(
