@@ -21,24 +21,29 @@ ASCII_ART = f"""
 """
 
 def main():
+    """
+    Main entry point for the AMLY Downloader.
+    Parses command-line arguments and calls the appropriate handler.
+    """
+    print(LOGO)
+    print(ASCII_ART)
+
+    # Initialize the argument parser
     parser = argparse.ArgumentParser(
-        description=print(ASCII_ART)
+        description="Command line tool to download lyrics from Apple Music"
     )
     parser.add_argument(
-        '-v',
-        '--version',
+        '-v', '--version',
         action='version',
         version='%(prog)s v1.0.0'
     )
     parser.add_argument(
-        '-s',
-        '--sync',
+        '-s', '--sync',
         help="Save timecode's in 00:00.000 format (three ms points)",
         action="store_true"
     )
     parser.add_argument(
-        '-r',
-        '--romaji',
+        '-r', '--romaji',
         help="Convert Japanese lyrics to Romaji (requires MeCab/Cutlet)",
         action="store_true"
     )
@@ -56,8 +61,9 @@ def main():
         input("Enter to exit...")
         return
     
+    # Execute the main handler with the parsed arguments
     handler(args)
 
 if __name__ == "__main__":
-    print(LOGO)
     main()
+

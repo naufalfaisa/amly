@@ -23,12 +23,16 @@ HEADERS = {
 
 
 class AppleMusic(object):
+    """
+    Handles interactions with the Apple Music API.
+    Manages authentication, token handling, and data fetching.
+    """
     def __init__(self, cache: str, config: str, sync: int):
         self.__session = requests.Session()
         self.__session.headers = HEADERS
 
         self.__cache = Cache(cache)
-        self.__config = Configure(config)
+        self.__config = Configure()
 
         self.sync = sync
 
@@ -67,6 +71,10 @@ class AppleMusic(object):
         else: logger.error("URL is invalid!", 1)
 
     def __accessToken(self):
+        """
+        Retrieves or refreshes the Apple Music access token.
+        Uses cache or fetches from the web if missing/expired.
+        """
         while True:
             accessToken = self.__cache.get("accessToken")
 
@@ -114,6 +122,9 @@ class AppleMusic(object):
                 self.__cache.delete("accessToken")
 
     def __mediaUserToken(self, fromLoop=False):
+        """
+        Validates the media user token and retrieves the storefront and language.
+        """
         if self.__config.get():
             logger.info("Checking media-user-token...")
 
@@ -156,6 +167,10 @@ class AppleMusic(object):
             logger.error(f"{err_status} - {err_detail}", 1)
 
     def __getJson(self):
+        """
+        Fetches the JSON response from Apple Music API for the current ID.
+        Uses caching to avoid redundant network requests.
+        """
         logger.info("Fetching api response...")
 
         cacheKey = f"{self.id}:{self.storefront}"
@@ -180,6 +195,9 @@ class AppleMusic(object):
         else: self.__getErrors(response)
 
     def getInfo(self, url):
+        """
+        Public method to get album or song info from a URL.
+        """
         self.__getUrl(url)
 
         if self.kind == "album":

@@ -4,6 +4,9 @@ from .logger import logger
 
 
 class RomajiConverter:
+    """
+    Handles conversion of Japanese lyrics to Romaji using Cutlet.
+    """
     def __init__(self):
         try:
             self.katsu = cutlet.Cutlet()
@@ -18,6 +21,9 @@ class RomajiConverter:
         return self.katsu is not None
     
     def convert_line(self, line):
+        """
+        Converts a single line of lyrics to Romaji, preserving timestamps.
+        """
         if not self.is_available():
             return line
         
@@ -31,7 +37,6 @@ class RomajiConverter:
             if lyrics.strip():
                 try:
                     romaji = self.katsu.romaji(lyrics)
-                    # Kapitalisasi huruf pertama
                     romaji = romaji[0].upper() + romaji[1:] if romaji else romaji
                     return f"{timestamp}{romaji}"
                 except Exception as e:
@@ -43,6 +48,9 @@ class RomajiConverter:
             return line
     
     def convert_lyrics(self, lyrics_list):
+        """
+        Converts a list of lyric lines to Romaji.
+        """
         if not self.is_available():
             logger.warning("Romaji converter not available, returning original lyrics")
             return lyrics_list

@@ -2,6 +2,9 @@ from bs4 import BeautifulSoup
 
 
 def __getTs(ts, syncpoints: int):
+    """
+    Parses a timestamp string into a formatted string based on syncpoints.
+    """
     ts = str(ts).replace('s', '')
     secs = float(ts.split(':')[-1])
 
@@ -16,6 +19,10 @@ def __getTs(ts, syncpoints: int):
 
 
 def getLyrics(ttml, syncpoints: int):
+    """
+    Parses TTML content to extract lyrics and songwriters.
+    Returns a dictionary containing lyrics, songwriters, and time-synced lyrics.
+    """
     ttml = BeautifulSoup(ttml, "lxml")
 
     info = {}

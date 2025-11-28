@@ -32,7 +32,8 @@ cd amly
 ```
 3. Install dependencies:
 pip install -r requirements.txt
-4. Run the program:
+4. Rename `.env-example` to `.env` and add your media user token.
+5. Run the program:
 ```
 python -m amly [-h] [-v] [-s] [urls...]
 ```

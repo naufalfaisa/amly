@@ -6,3 +6,4 @@ sanitize-filename
 mecab-python3
 unidic-lite
 cutlet
+dotenv
